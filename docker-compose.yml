@@ -1,0 +1,29 @@
+version: '3.1'
+
+services:
+  database:
+    image: mysql:8.0.30
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: todo
+      MYSQL_USER: casau
+      MYSQL_PASSWORD: anhyeuem
+    volumes:
+      - db_data:/var/lib/mysql
+  db_ui:
+    image: phpmyadmin:5
+    restart: always
+    ports:
+      - 8080:80
+    depends_on:
+      - database
+    environment:
+      PMA_HOST: database
+      PMA_USER: casau
+      PMA_PASSWORD: anhyeuem
+
+volumes:
+  db_data: {}
