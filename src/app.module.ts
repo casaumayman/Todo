@@ -6,6 +6,8 @@ import { UsersModule } from './modules/users/users.module';
 import { TasksModule } from './modules/tasks/tasks.module';
 import { dbConfigs } from './configs/database';
 import { AuthModule } from './modules/auth/auth.module';
+import { APP_FILTER } from '@nestjs/core';
+import { AllErrorFilter } from './exceptions/global-error.filter';
 
 @Module({
   imports: [
@@ -15,6 +17,6 @@ import { AuthModule } from './modules/auth/auth.module';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, { provide: APP_FILTER, useClass: AllErrorFilter }],
 })
 export class AppModule { }
