@@ -1,29 +1,39 @@
 version: '3.1'
 
 services:
-  database:
+  database: # MySQL Database
     image: mysql:8.0.30
     restart: always
-    ports:
-      - 3306:3306
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: todo
-      MYSQL_USER: casau
-      MYSQL_PASSWORD: anhyeuem
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
-  db_ui:
+  db_ui: # phpmyadmin connect mysql
     image: phpmyadmin:5
     restart: always
     ports:
-      - 8080:80
+      - ${DB_UI_PORT}:80
     depends_on:
       - database
     environment:
       PMA_HOST: database
-      PMA_USER: casau
-      PMA_PASSWORD: anhyeuem
-
+      PMA_USER: ${DB_USER}
+      PMA_PASSWORD: ${DB_PASSWORD}
+  backend: # NestJS App backend
+    build: 
+      context: ./backend
+    ports:
+      - ${BE_PORT}:3000
+    depends_on:
+      - database
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
 volumes:
   db_data: {}
